@@ -13,6 +13,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by formation on 21/07/2016.
@@ -29,6 +30,7 @@ public class CommandeService {
     }
     public Commande creer(Panier panier) {
         Commande commande = new Commande();
+        commande.id = UUID.randomUUID().toString();
         commande.client = panier.client;
         commande.date = DateService.get().now();
         commande.produits = new ArrayList<>();
@@ -85,6 +87,14 @@ public class CommandeService {
             preparedStatementInsertCommande.setTimestamp(1,new java.sql.Timestamp(commande.date.toDate().getTime()));
             preparedStatementInsertCommande.setString(2,commande.client.id);
 
+            preparedStatementInsertCommande.execute();
+
+            PreparedStatement preparedStatementInsertProduitCommande = DBService.get().getConnection().prepareStatement(sRequeteInsertProduitCommande);
+            preparedStatementInsertProduitCommande.setString(0,commande.id);
+
+            preparedStatementInsertProduitCommande.setString(1,commande.id);
+            preparedStatementInsertProduitCommande.setString(2,commande.id);
+            preparedStatementInsertProduitCommande.setString(3,commande.id);
 
         } catch (SQLException e) {
             e.printStackTrace();
