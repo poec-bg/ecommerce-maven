@@ -37,7 +37,13 @@ CREATE TABLE `ProduitPanier` (
 CREATE TABLE `Commande` (
   `id` VARCHAR(255) NOT NULL,
   `date` DATETIME NOT NULL,
-  `idPanier` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`id`, `idPanier`),
-  UNIQUE INDEX `idPanier_UNIQUE` (`idPanier` ASC),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+  `idClient` VARCHAR(255) NOT NULL,
+  `montant` FLOAT NOT NULL,
+  PRIMARY KEY (`id`));
+
+CREATE TABLE `ProduitCommande` (
+  `idCommande` VARCHAR(255) NOT NULL,
+  `idProduit` VARCHAR(255) NOT NULL,
+  `quantite` INT NOT NULL,
+  `prixUnitaire` FLOAT NOT NULL,
+  PRIMARY KEY (`idCommande`, `idProduit`));
