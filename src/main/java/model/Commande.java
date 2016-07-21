@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Commande {
 
-    public int id;
+    public String id;
     public Client client;
     public Date date;
     public List<ProduitCommande> produits;
