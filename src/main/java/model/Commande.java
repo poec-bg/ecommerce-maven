@@ -15,12 +15,6 @@ public class Commande {
         Commande commande = new Commande();
         commande.client = panier.client;
         commande.date = new Date();
-//        commande.produits = new model.ProduitCommande[panier.produits.length];
-//        for (int indexProduitPanier = 0; indexProduitPanier < panier.produits.length; indexProduitPanier++) {
-//            commande.produits[indexProduitPanier] = new model.ProduitCommande(panier.produits[indexProduitPanier].produit,
-//                    panier.produits[indexProduitPanier].quantite,
-//                    panier.produits[indexProduitPanier].produit.prixUnitaire);
-//        }
         commande.produits = new ArrayList<>();
         for (ProduitPanier produitPanier : panier.produits) {
             commande.produits.add(new ProduitCommande(produitPanier.produit,
