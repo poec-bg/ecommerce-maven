@@ -1,8 +1,8 @@
 package services;
 
 import com.google.common.base.Strings;
-import exceptions.InvalidArgumentException;
 import exceptions.MetierException;
+import exceptions.InvalidArgumentException;
 import model.Client;
 import services.db.DBService;
 import validators.EmailValidator;

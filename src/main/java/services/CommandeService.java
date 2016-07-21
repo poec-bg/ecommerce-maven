@@ -1,7 +1,7 @@
 package services;
 
 import com.google.common.base.Strings;
-import com.sun.javaws.exceptions.InvalidArgumentException;
+import exceptions.MetierException;
 import model.*;
 import services.date.DateService;
 import services.db.DBService;
@@ -28,7 +28,12 @@ public class CommandeService {
         }
         return instance;
     }
-    public Commande creer(Panier panier) {
+    public Commande creer(Panier panier) throws exceptions.InvalidArgumentException, MetierException {
+        if(panier == null){
+            throw new exceptions.InvalidArgumentException(new String[] {
+                "Le panier ne peut pas être null"
+            });
+        }
         Commande commande = new Commande();
         commande.id = UUID.randomUUID().toString();
         commande.client = panier.client;
@@ -39,16 +44,19 @@ public class CommandeService {
                     produitPanier.quantite,
                     produitPanier.produit.prixUnitaire));
         }
+        if(commande.produits == null){
+            throw new MetierException("Une commande doit contenir au moins un produits");
+        }
         return commande;
     }
 
-    public Commande getCommande(String idCommande) throws InvalidArgumentException {
+    public Commande getCommande(String idCommande) throws exceptions.InvalidArgumentException {
         List<String> validationMessages = new ArrayList<>();
         if (Strings.isNullOrEmpty(idCommande)) {
-            validationMessages.add("L'idClient ne peut être null ou vide");
+            validationMessages.add("L'idCommande ne peut être null ou vide");
         }
         if (validationMessages.size() > 0) {
-            throw new InvalidArgumentException((String[]) validationMessages.toArray(new String[0]));
+            throw new exceptions.InvalidArgumentException((String[]) validationMessages.toArray(new String[0]));
         }
 
         try {
@@ -77,7 +85,10 @@ public class CommandeService {
         return null;
     }
 
-    public void enregistrer(Commande commande){
+    public void enregistrer(Commande commande) throws exceptions.InvalidArgumentException {
+        if(commande == null){
+            throw new exceptions.InvalidArgumentException(new String[] {"La commande ne doit pas être null"});
+        }
         String sRequeteInsertCommande = "INSERT INTO Commande (`id`,`date`,`idClient`) VALUES (?,?,?)";
         String sRequeteInsertProduitCommande = "INSERT INTO ProduitCommande (`idCommande`,`idProduit`,`quantite`,`prixUnitaire`) VALUES (?, ?, ?, ?)";
 
