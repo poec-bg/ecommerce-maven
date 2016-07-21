@@ -43,8 +43,8 @@ CREATE TABLE `Commande` (
   UNIQUE INDEX `id_UNIQUE` (`id` ASC));
 
 CREATE TABLE `ProduitCommande` (
-  `idPanier` VARCHAR(255) NOT NULL,
+  `idProduit` VARCHAR(255) NOT NULL,
   `idCommande` VARCHAR(255) NOT NULL,
   `quantite` INT NOT NULL,
   `prixUnitaire` FLOAT NULL,
-  PRIMARY KEY (`idPanier`, `idProduit`));
+  PRIMARY KEY (`idProduit`, `idCommande`));
