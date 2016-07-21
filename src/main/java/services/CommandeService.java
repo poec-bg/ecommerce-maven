@@ -1,8 +1,10 @@
 package services;
 
 import com.google.common.base.Strings;
+import exceptions.InvalidArgumentException;
 import exceptions.MetierException;
 import model.*;
+import org.joda.time.DateTime;
 import services.date.DateService;
 import services.db.DBService;
 
@@ -94,22 +96,54 @@ public class CommandeService {
 
         try {
             PreparedStatement preparedStatementInsertCommande = DBService.get().getConnection().prepareStatement(sRequeteInsertCommande);
-            preparedStatementInsertCommande.setString(0,commande.id);
-            preparedStatementInsertCommande.setTimestamp(1,new java.sql.Timestamp(commande.date.toDate().getTime()));
-            preparedStatementInsertCommande.setString(2,commande.client.id);
+            preparedStatementInsertCommande.setString(1,commande.id);
+            preparedStatementInsertCommande.setTimestamp(2,new java.sql.Timestamp(commande.date.toDate().getTime()));
+            preparedStatementInsertCommande.setString(3,commande.client.id);
 
             preparedStatementInsertCommande.execute();
+            for (ProduitCommande produitCommande : commande.produits) {
+                PreparedStatement preparedStatementInsertProduitCommande = DBService.get().getConnection().prepareStatement(sRequeteInsertProduitCommande);
+                preparedStatementInsertProduitCommande.setString(1,commande.id);
+                preparedStatementInsertProduitCommande.setString(2,produitCommande.produit.id);
+                preparedStatementInsertProduitCommande.setInt(3,produitCommande.quantite);
+                preparedStatementInsertProduitCommande.setFloat(4,produitCommande.prixUnitaire);
 
-            PreparedStatement preparedStatementInsertProduitCommande = DBService.get().getConnection().prepareStatement(sRequeteInsertProduitCommande);
-            preparedStatementInsertProduitCommande.setString(0,commande.id);
+                preparedStatementInsertProduitCommande.execute();
+            }
 
-            preparedStatementInsertProduitCommande.setString(1,commande.id);
-            preparedStatementInsertProduitCommande.setString(2,commande.id);
-            preparedStatementInsertProduitCommande.setString(3,commande.id);
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+    public List<Commande> listerCommandesClient(String idClient) throws InvalidArgumentException {
+        System.out.println("IdClient => " + idClient);
+        if(idClient == null || idClient.equals("")){
+            throw new InvalidArgumentException(new String[] {"L'idClient ne doit pas être null ou vide"});
+        }
+        List<Commande> commandesClient = new ArrayList<>();
+        try {
+            Statement requete = DBService.get().getConnection().createStatement();
+            ResultSet result = requete.executeQuery("SELECT * FROM Commande where idClient='" + idClient + "'");
+            while(result.next()){
+                Commande commande = new Commande();
+                commande.id = result.getString("id");
+                commande.client = ClientService.get().getClient(result.getString("idClient"));
+                commande.date = new DateTime(result.getTimestamp("date"));
+                Statement requeteProduitCommande = DBService.get().getConnection().createStatement();
+                ResultSet resultProduitCommande = requeteProduitCommande.executeQuery("SELECT * FROM ProduitCommande WHERE idCommande='" + commande.id + "'");
+                while (resultProduitCommande.next()) {
+                    String idProduit = resultProduitCommande.getString("idProduit");
+                    Produit produit = ProduitService.get().getProduit(idProduit);
+                    ProduitCommande produitCommande = new ProduitCommande(produit, resultProduitCommande.getInt("quantite"),resultProduitCommande.getFloat("prixUnitaire"));
+                    commande.produits.add(produitCommande);
+                }
+                commandesClient.add(commande);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return commandesClient;
+    }
 }

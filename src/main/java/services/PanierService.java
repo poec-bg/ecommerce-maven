@@ -1,5 +1,6 @@
 package services;
 
+import com.google.common.base.Strings;
 import exceptions.InvalidArgumentException;
 import model.Client;
 import model.Panier;
@@ -86,6 +87,27 @@ public class PanierService {
 
         return creer(client);
     }
+
+//    public Panier getPanier(String idPanier) throws InvalidArgumentException {
+//        if(!Strings.isNullOrEmpty(idPanier)){
+//            throw new InvalidArgumentException(new String[] {"L'idPanier ne doit pas être null ou vide"});
+//        }
+//        try {
+//            Statement requete = DBService.get().getConnection().createStatement();
+//            ResultSet result = requete.executeQuery("SELECT * FROM Panier WHERE id='" + idPanier + "'");
+//            if(result.next()){
+//                Panier panier = new Panier();
+//                panier.id = result.getString("id");
+//                panier.date = new DateTime(result.getTimestamp("date"));
+//                panier.client = ClientService.get().getClient(result.getString("idClient"));
+//                panier.produits
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
     public void invalider(Panier panier) throws InvalidArgumentException {
         List<String> validationMessages = new ArrayList<>();
@@ -212,6 +234,28 @@ public class PanierService {
         return panier;
     }
 
+    public List<Panier> lister(Client client) throws InvalidArgumentException {
+        if(client == null){
+            throw new InvalidArgumentException(new String[] {"Le client ne doit pas être null"});
+        }
+        List<Panier> paniers = new ArrayList<>();
+        String sRequete = "SELECT * FROM Panier WHERE idClient = '" + client.id + "'";
+        try {
+            Statement requete = DBService.get().getConnection().createStatement();
+            ResultSet result = requete.executeQuery(sRequete);
+            while(result.next()){
+                Panier panier = new Panier();
+                panier.id = result.getString("id");
+                panier.date = DateTime.parse(result.getDate("date").toString());
+                panier.client = ClientService.get().getClient(result.getString("idClient"));
+                paniers.add(panier);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return paniers;
+    }
     public void clear() {
         Connection connection = null;
         try {

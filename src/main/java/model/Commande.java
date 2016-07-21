@@ -14,6 +14,10 @@ public class Commande {
     public List<ProduitCommande> produits;
     public boolean isSupprime = false;
 
+    public Commande(){
+        produits = new ArrayList<>();
+    }
+
     public void affiche() {
         System.out.println(String.format("Date : %s \nmodel.Client : %s \nAdresse : %s", date, client.nom, client.adressePostale));
         for (ProduitCommande produitCommande : produits) {

@@ -1,11 +1,9 @@
 import com.google.common.net.InetAddresses;
 import exceptions.InvalidArgumentException;
 import exceptions.MetierException;
-import model.Client;
-import model.Panier;
-import model.Produit;
-import model.ProduitPanier;
+import model.*;
 import services.ClientService;
+import services.CommandeService;
 import services.PanierService;
 import services.ProduitService;
 import services.date.SystemDateService;
@@ -45,6 +43,10 @@ public class Lanceur {
             System.out.println("[4] : lister les Clients");
             System.out.println("[5] : Ajouter un produit au panier");
             System.out.println("[6] : Détail d'un client");
+            System.out.println("[7] : Lister Les paniers");
+            System.out.println("[8] : Invalider le Panier");
+            System.out.println("[9] : Créer Commande");
+            System.out.println("[10] : lister Commandes Client");
             System.out.print("Votre choix : ");
 
             String command = br.readLine();
@@ -130,6 +132,60 @@ public class Lanceur {
                         e.printStackTrace();
                     }
                     break;
+                case "7" :
+                    System.out.print("Veuillez saisir l'idClient : ");
+                    idClient = br.readLine();
+                    try {
+                        List<Panier> paniers = PanierService.get().lister(ClientService.get().getClient(idClient));
+                        for (Panier panier : paniers ) {
+                            System.out.println(String.format("%s",panier.id));
+                        }
+                    } catch (InvalidArgumentException e) {
+                        e.printStackTrace();
+                    }
+
+                    break;
+                case "8" :
+                    // Invalider Panier
+                    System.out.print("Veuillez saisir l'idClient : ");
+                    idClient = br.readLine();
+                    try {
+                        Panier panier = PanierService.get().getPanier(ClientService.get().getClient(idClient));
+                        PanierService.get().invalider(panier);
+                    } catch (InvalidArgumentException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case "9" :
+                    // Créer commande
+                    System.out.print("Veuillez saisir l'idClient : ");
+                    idClient = br.readLine();
+                    try {
+                        Commande commande = CommandeService.get().creer(PanierService.get().getPanier(ClientService.get().getClient(idClient)));
+                        CommandeService.get().enregistrer(commande);
+                        System.out.println("Commande enregistrée");
+                        PanierService.get().invalider(PanierService.get().getPanier(ClientService.get().getClient(idClient)));
+                    } catch (InvalidArgumentException e) {
+                        e.printStackTrace();
+                    } catch (MetierException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case "10" :
+                    System.out.print("Veuillez saisir l'idClient : ");
+                    idClient = br.readLine();
+                    try {
+                        List<Commande> commandes = CommandeService.get().listerCommandesClient(idClient);
+                        for (Commande commande : commandes) {
+                            Client client = commande.client;
+                            System.out.println(String.format("Numéro de commande %s du client %s %s",commande.id, client.nom, client.prenom));
+                            for (ProduitCommande produitCommande : commande.produits) {
+                                System.out.println(String.format("Produit : %s %s %f avec une quantité de %d",produitCommande.produit.nom, produitCommande.produit.description, produitCommande.prixUnitaire,produitCommande.quantite));
+                            }
+                        }
+                    } catch (InvalidArgumentException e) {
+                        e.printStackTrace();
+                    }
             }
 
         }
