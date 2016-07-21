@@ -1,4 +1,5 @@
-CREATE TABLE `Client` (
+USE `lenaick`;
+CREATE TABLE IF NOT EXISTS `Client` (
   `id` VARCHAR(255) NOT NULL,
   `nom` VARCHAR(45) NULL,
   `email` VARCHAR(45) NOT NULL,
@@ -11,7 +12,7 @@ CREATE TABLE `Client` (
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC));
 
-CREATE TABLE `Produit` (
+CREATE TABLE IF NOT EXISTS `Produit` (
   `id` VARCHAR(255) NOT NULL,
   `nom` VARCHAR(45) NULL,
   `description` VARCHAR(45) NULL,
@@ -20,7 +21,7 @@ CREATE TABLE `Produit` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC));
 
-CREATE TABLE `Panier` (
+CREATE TABLE IF NOT EXISTS `Panier` (
   `id` VARCHAR(255) NOT NULL,
   `date` DATETIME NOT NULL,
   `idClient` VARCHAR(255) NOT NULL,
@@ -28,8 +29,21 @@ CREATE TABLE `Panier` (
   UNIQUE INDEX `idClient_UNIQUE` (`idClient` ASC),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC));
 
-CREATE TABLE `ProduitPanier` (
+CREATE TABLE IF NOT EXISTS `ProduitPanier` (
   `idPanier` VARCHAR(255) NOT NULL,
   `idProduit` VARCHAR(255) NOT NULL,
   `quantite` INT NOT NULL,
   PRIMARY KEY (`idPanier`, `idProduit`));
+
+CREATE TABLE IF NOT EXISTS `Commande` (
+    `id` VARCHAR(255) NOT NULL,
+    `date` DATETIME NOT NULL,
+    `idClient` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
+CREATE TABLE IF NOT EXISTS `ProduitCommande` (
+    `idCommande` VARCHAR(255) NOT NULL,
+    `idProduit` VARCHAR(255) NOT NULL,
+    `quantite` INT NOT NULL,
+    PRIMARY KEY (`idCommande`, `idProduit`));
