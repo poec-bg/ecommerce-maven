@@ -13,7 +13,7 @@ import java.util.Date;
  */
 public class CommandeService {
 
-    public static Commande creer(Panier panier) {
+    public static Commande creerCommande(Panier panier) {
         Commande commande = new Commande();
         commande.client = panier.client;
         commande.date = new Date();
@@ -26,4 +26,6 @@ public class CommandeService {
 
         return commande;
     }
+
+
 }
