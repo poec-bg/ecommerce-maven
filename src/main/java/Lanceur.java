@@ -1,3 +1,4 @@
+import com.google.common.net.InetAddresses;
 import exceptions.InvalidArgumentException;
 import exceptions.MetierException;
 import model.Client;
@@ -7,12 +8,17 @@ import model.ProduitPanier;
 import services.ClientService;
 import services.PanierService;
 import services.ProduitService;
+import services.date.SystemDateService;
 import services.db.DBService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.sql.*;
+import java.util.Enumeration;
 import java.util.List;
 
 public class Lanceur {
@@ -42,82 +48,91 @@ public class Lanceur {
             System.out.print("Votre choix : ");
 
             String command = br.readLine();
-            if (command.equals("0")) {
-                DBService.get().close();
-                System.out.println("Au revoir");
-                break;
-            } else if (command.equals("1")) {
-                System.out.println("Veuillez saisir les données du Produit");
-                System.out.print("Nom : ");
-                String nom = br.readLine();
-                System.out.print("Description : ");
-                String description = br.readLine();
-                System.out.print("Prix Unitaire : ");
-                float prixUnitaire = Float.parseFloat(br.readLine());
+            switch (command){
+                case "0" :
+                    DBService.get().close();
+                    System.out.println("Au revoir");
+                    System.exit(0);
+                case "1" :
+                    System.out.println("Veuillez saisir les données du Produit");
+                    System.out.print("Nom : ");
+                    String nom = br.readLine();
+                    System.out.print("Description : ");
+                    String description = br.readLine();
+                    System.out.print("Prix Unitaire : ");
+                    float prixUnitaire = Float.parseFloat(br.readLine());
 
-                try {
-                    Produit produit = ProduitService.get().creer(nom, description, prixUnitaire);
-                    ProduitService.get().enregistrer(produit);
+                    try {
+                        Produit produit = ProduitService.get().creer(nom, description, prixUnitaire);
+                        ProduitService.get().enregistrer(produit);
 
-                    System.out.println("Vous venez de créer le produit : " + produit.nom);
-                } catch (InvalidArgumentException e) {
-                    e.printStackTrace();
-                }
-            } else if (command.equals("2")) {
-                List<Produit> produits = ProduitService.get().lister();
-                for (Produit produit : produits) {
-                    System.out.println(String.format("%s / %s / %s / %f", produit.id, produit.nom, produit.description, produit.prixUnitaire));
-                }
-            } else if (command.equals("3")) {
-                System.out.println("Veuillez saisir les données du Client");
-                System.out.print("Email : ");
-                String email = br.readLine();
-                System.out.print("Mot de Passe : ");
-                String motDePasse = br.readLine();
-                System.out.print("Nom : ");
-                String nom = br.readLine();
-                System.out.print("Prenom : ");
-                String prenom = br.readLine();
-                try {
-                    Client client = ClientService.get().creer(email, motDePasse);
-                    ClientService.get().modifier(client, nom, prenom, null, null);
-                    ClientService.get().enregistrer(client);
-                    System.out.println("Vous venez de créer le client : " + client.nom + " " + client.prenom);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else if (command.equals("4")) {
-                List<Client> clients = ClientService.get().lister();
-                for (Client client : clients) {
-                    System.out.println(String.format("%s / %s / %s / %s", client.id, client.email, client.nom, client.prenom));
-                }
-            } else if (command.equals("5")) {
-                System.out.print("Veuillez saisir l'id du client : ");
-                String idClient = br.readLine();
-                System.out.print("Veuillez saisir l'id du produit : ");
-                String idProduit = br.readLine();
-                try {
-                    Client client = ClientService.get().getClient(idClient);
-                    Panier panier = PanierService.get().getPanier(client);
-                    Produit produit = ProduitService.get().getProduit(idProduit);
-                    PanierService.get().ajouterProduit(panier, produit);
-                } catch (InvalidArgumentException e) {
-                    e.printStackTrace();
-                }
-            } else if (command.equals("6")) {
-                System.out.print("Veuillez saisir l'id du client : ");
-                String idClient = br.readLine();
-                try {
-                    Client client = ClientService.get().getClient(idClient);
-                    Panier panier = PanierService.get().getPanier(client);
-                    System.out.println(String.format("%s / %s / %s / %s", client.id, client.email, client.nom, client.prenom));
-                    for (ProduitPanier produit : panier.produits) {
-                        System.out.println(String.format("%s / %.2f / %d", produit.produit.nom, produit.produit.prixUnitaire, produit.quantite));
+                        System.out.println("Vous venez de créer le produit : " + produit.nom);
+                    } catch (InvalidArgumentException e) {
+                        e.printStackTrace();
                     }
-                } catch (InvalidArgumentException e) {
-                    e.printStackTrace();
-                }
+                    break;
+                case "2" :
+                    List<Produit> produits = ProduitService.get().lister();
+                    for (Produit produit : produits) {
+                        System.out.println(String.format("%s / %s / %s / %f", produit.id, produit.nom, produit.description, produit.prixUnitaire));
+                    }
+                    break;
+                case "3" :
+                    System.out.println("Veuillez saisir les données du Client");
+                    System.out.print("Email : ");
+                    String email = br.readLine();
+                    System.out.print("Mot de Passe : ");
+                    String motDePasse = br.readLine();
+                    System.out.print("Nom : ");
+                    String nomClient = br.readLine();
+                    System.out.print("Prenom : ");
+                    String prenom = br.readLine();
+                    try {
+                        Client client = ClientService.get().creer(email, motDePasse);
+                        ClientService.get().modifier(client, nomClient, prenom, null, null);
+                        ClientService.get().enregistrer(client);
+                        System.out.println("Vous venez de créer le client : " + client.nom + " " + client.prenom);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case "4" :
+                    List<Client> clients = ClientService.get().lister();
+                    for (Client client : clients) {
+                        System.out.println(String.format("%s / %s / %s / %s", client.id, client.email, client.nom, client.prenom));
+                    }
+                    break;
+                case "5" :
+                    System.out.print("Veuillez saisir l'id du client : ");
+                    String idClient = br.readLine();
+                    System.out.print("Veuillez saisir l'id du produit : ");
+                    String idProduit = br.readLine();
+                    try {
+                        Client client = ClientService.get().getClient(idClient);
+                        Panier panier = PanierService.get().getPanier(client);
+                        Produit produit = ProduitService.get().getProduit(idProduit);
+                        PanierService.get().ajouterProduit(panier, produit);
+                    } catch (InvalidArgumentException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case "6" :
+                    System.out.print("Veuillez saisir l'id du client : ");
+                    String idClientBis = br.readLine();
+                    try {
+                        Client client = ClientService.get().getClient(idClientBis);
+                        Panier panier = PanierService.get().getPanier(client);
+                        System.out.println(String.format("%s / %s / %s / %s", client.id, client.email, client.nom, client.prenom));
+                        for (ProduitPanier produit : panier.produits) {
+                            System.out.println(String.format("%s / %.2f / %d", produit.produit.nom, produit.produit.prixUnitaire, produit.quantite));
+                        }
+                    } catch (InvalidArgumentException e) {
+                        e.printStackTrace();
+                    }
+                    break;
             }
+
         }
+
     }
 }
