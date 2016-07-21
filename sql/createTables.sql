@@ -1,6 +1,6 @@
 CREATE TABLE `Client` (
   `id` VARCHAR(255) NOT NULL,
-  `nom` VARCHAR(45) NULL,
+  `nom` VARCHAR(255) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
   `motDePasse` VARCHAR(45) NOT NULL,
   `prenom` VARCHAR(45) NULL,
@@ -12,8 +12,10 @@ CREATE TABLE `Client` (
   UNIQUE INDEX `email_UNIQUE` (`email` ASC));
 
 CREATE TABLE `Produit` (
+ALTER TABLE `alois`.`Produit`
+CHANGE COLUMN `id` `idProduit` VARCHAR(255) NOT NULL ;
   `id` VARCHAR(255) NOT NULL,
-  `nom` VARCHAR(45) NULL,
+  `nom` VARCHAR(255) NOT NULL,
   `description` VARCHAR(45) NULL,
   `prixUnitaire` FLOAT NULL,
   `isSupprime` TINYINT(1) NOT NULL DEFAULT 0,
@@ -21,6 +23,8 @@ CREATE TABLE `Produit` (
   UNIQUE INDEX `id_UNIQUE` (`id` ASC));
 
 CREATE TABLE `Panier` (
+ALTER TABLE `alois`.`Panier`
+    CHANGE COLUMN `id` `idPanier` VARCHAR(255) NOT NULL ;
   `id` VARCHAR(255) NOT NULL,
   `date` DATETIME NOT NULL,
   `idClient` VARCHAR(255) NOT NULL,
@@ -33,3 +37,13 @@ CREATE TABLE `ProduitPanier` (
   `idProduit` VARCHAR(255) NOT NULL,
   `quantite` INT NOT NULL,
   PRIMARY KEY (`idPanier`, `idProduit`));
+
+CREATE TABLE `alois`.`Commande` (
+    `idCommande` VARCHAR(255) NOT NULL,
+    `date` DATETIME NULL,
+    `idClient` VARCHAR(255) NULL;
+    'idPanier' VARCHAR (255) NULL;
+
+CREATE TABLE `alois`.`PanierCommande` (
+  `idCommande` INT NOT NULL,
+  PRIMARY KEY (`idCommande`));

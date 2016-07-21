@@ -1,20 +1,22 @@
 package model;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Commande {
 
-    public int id;
+    public String id;
     public Client client;
-    public Date date;
+    public DateTime date;
     public List<ProduitCommande> produits;
 
     public static Commande creer(Panier panier) {
         Commande commande = new Commande();
         commande.client = panier.client;
-        commande.date = new Date();
+        commande.date = new DateTime();
 //        commande.produits = new model.ProduitCommande[panier.produits.length];
 //        for (int indexProduitPanier = 0; indexProduitPanier < panier.produits.length; indexProduitPanier++) {
 //            commande.produits[indexProduitPanier] = new model.ProduitCommande(panier.produits[indexProduitPanier].produit,
