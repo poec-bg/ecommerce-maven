@@ -1,10 +1,8 @@
 import exceptions.InvalidArgumentException;
 import exceptions.MetierException;
-import model.Client;
-import model.Panier;
-import model.Produit;
-import model.ProduitPanier;
+import model.*;
 import services.ClientService;
+import services.CommandeService;
 import services.PanierService;
 import services.ProduitService;
 import services.db.DBService;
@@ -39,6 +37,7 @@ public class Lanceur {
             System.out.println("[4] : lister les Clients");
             System.out.println("[5] : Ajouter un produit au panier");
             System.out.println("[6] : Détail d'un client");
+            System.out.println("[7) : Créer une commande");
             System.out.print("Votre choix : ");
 
             String command = br.readLine();
@@ -117,6 +116,22 @@ public class Lanceur {
                 } catch (InvalidArgumentException e) {
                     e.printStackTrace();
                 }
+            }
+            else if (command.equals("6")){
+                System.out.print("Veuillez saisir l'id du client : ");
+                String idClient = br.readLine();
+                Client client= null;
+                try {
+                    client = ClientService.get().getClient(idClient);
+                    Panier panier = PanierService.get().getPanier(client);
+                    Commande commande= CommandeService.creerCommande(panier);
+                    commande.affiche();
+
+                } catch (InvalidArgumentException e) {
+                    e.printStackTrace();
+                }
+
+
             }
         }
     }
