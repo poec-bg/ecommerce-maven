@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS `Commande` (
     `id` VARCHAR(255) NOT NULL,
     `date` DATETIME NOT NULL,
     `idClient` VARCHAR(255) NOT NULL,
+    `isSupprime` TINYINT(1) NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `id_UNIQUE` (`id` ASC));
 
@@ -46,4 +47,5 @@ CREATE TABLE IF NOT EXISTS `ProduitCommande` (
     `idCommande` VARCHAR(255) NOT NULL,
     `idProduit` VARCHAR(255) NOT NULL,
     `quantite` INT NOT NULL,
+    `prixUnitaire` FLOAT NOT NULL,
     PRIMARY KEY (`idCommande`, `idProduit`));
