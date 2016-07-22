@@ -20,7 +20,7 @@ public class DBService {
             adresseIpMysqlServer = "192.168.1.6";
         }
         else{
-            adresseIpMysqlServer = "10.110.10.13";
+            adresseIpMysqlServer = "10.110.10.27";
         }
         try {
             Class.forName("com.mysql.jdbc.Driver");

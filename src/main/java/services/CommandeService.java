@@ -87,6 +87,11 @@ public class CommandeService {
         return null;
     }
 
+    /**
+     * Fonction qui va enregistrer en base de données une commande
+     * @param commande
+     * @throws exceptions.InvalidArgumentException
+     */
     public void enregistrer(Commande commande) throws exceptions.InvalidArgumentException {
         if(commande == null){
             throw new exceptions.InvalidArgumentException(new String[] {"La commande ne doit pas être null"});

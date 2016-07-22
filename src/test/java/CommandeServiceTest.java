@@ -56,7 +56,6 @@ public class CommandeServiceTest {
             e.printStackTrace();
             fail();
         }
-
     }
 
     @Test
@@ -70,8 +69,6 @@ public class CommandeServiceTest {
         } catch (InvalidArgumentException e) {
             assertTrue(true);
         }
-
-
     }
     @Test
     public void testGetCommande_idCommandeNull() {
@@ -99,7 +96,6 @@ public class CommandeServiceTest {
         } catch (InvalidArgumentException e) {
             assertTrue(true);
         }
-
     }
 
     @Test

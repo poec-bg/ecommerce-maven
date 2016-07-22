@@ -186,9 +186,9 @@ public class Lanceur {
                     } catch (InvalidArgumentException e) {
                         e.printStackTrace();
                     }
+                    break;
+                default:
             }
-
         }
-
     }
 }
