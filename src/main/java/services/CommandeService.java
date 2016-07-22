@@ -43,10 +43,13 @@ public class CommandeService {
 
     public static Commande creer(Panier panier){
         Commande commande = new Commande();
+
         commande.id = UUID.randomUUID().toString();
-        commande.idClient = panier.client.id;
         commande.date = DateService.get().now();
+        commande.client = panier.client;
         commande.montantHT = 0.0f;
+        commande.produits = panier.produits;
+
         for ( ProduitPanier produitPanier : panier.produits) {
             commande.montantHT = commande.montantHT + produitPanier.produit.prixUnitaire;
         }
@@ -74,12 +77,12 @@ public class CommandeService {
         try {
             Statement requete = DBService.get().getConnection().createStatement();
             ResultSet result = requete.executeQuery("SELECT * FROM Commande");
-            while (result.next()) {
-                Commande commande = new Commande();
-                commande.id = result.getString("id");
-                commande.client =
-
-            }
+//            while (result.next()) {
+//                Commande commande = new Commande();
+//                commande.id = result.getString("id");
+//                commande.client =
+//
+//            }
 
 
 
