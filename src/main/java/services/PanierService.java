@@ -62,7 +62,7 @@ public class PanierService {
             if (resultPanier.next()) {
                 Panier panier = new Panier();
                 panier.id = resultPanier.getString("id");
-                panier.client = ClientService.get().getClient(resultPanier.getString("idClient"));
+                panier.client = client;
                 panier.date = new DateTime(resultPanier.getTimestamp("date"));
                 panier.produits = new ArrayList<>();
 
