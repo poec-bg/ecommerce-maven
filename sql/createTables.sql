@@ -15,7 +15,7 @@ CREATE TABLE `Produit` (
   `id` VARCHAR(255) NOT NULL,
   `nom` VARCHAR(45) NULL,
   `description` VARCHAR(45) NULL,
-  `prixUnitaire` FLOAT NULL,
+  `prixUnitaire` FLOAT NOT NULL,
   `isSupprime` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC));
@@ -34,14 +34,16 @@ CREATE TABLE `ProduitPanier` (
   `quantite` INT NOT NULL,
   PRIMARY KEY (`idPanier`, `idProduit`));
 
-  CREATE TABLE `Commande` (
-    `id` VARCHAR(255) NOT NULL,
-    `idPanier` VARCHAR(255) NOT NULL,
-    `date` DATETIME NOT NULL,
-    PRIMARY KEY (`id`, `idPanier`, `date`);
-    UNIQUE INDEX `id_UNIQUE` (`id` ASC),
-
-    CREATE TABLE `ProduitCommande` (
-      `idCommande` VARCHAR (255) NOT NULL
-      `prixTotal` FLOAT NOT NULL,
-      PRIMARY KEY (`idCommande`, `prixTotal`));
+--  CREATE TABLE `Commande` (
+--    `id` VARCHAR(255) NOT NULL,
+--    `idClient` VARCHAR(255) NOT NULL,
+--    `date` DATETIME NOT NULL,
+--    PRIMARY KEY (`id`, `idPanier`);
+--    UNIQUE INDEX `id_UNIQUE` (`id` ASC),
+--
+--    CREATE TABLE `ProduitCommande` (
+--      `idCommande` VARCHAR (255) NOT NULL
+--      `idProduit` VARCHAR(255) NOT NULL,
+--      `prixUnitaire` FLOAT NOT NULL,
+--      `montant` FLOAT NOT NULL,
+--      PRIMARY KEY (`idCommande`, `prixTotal`));
