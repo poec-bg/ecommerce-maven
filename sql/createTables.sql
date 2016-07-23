@@ -38,6 +38,7 @@ CREATE TABLE `Commande` (
   `id` VARCHAR(255) NOT NULL,
   `date` DATETIME NOT NULL,
   `idClient` VARCHAR(255) NOT NULL,
+  `montant` FLOAT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC));
 
