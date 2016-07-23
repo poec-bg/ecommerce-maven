@@ -1,10 +1,8 @@
 import exceptions.InvalidArgumentException;
 import exceptions.MetierException;
-import model.Client;
-import model.Panier;
-import model.Produit;
-import model.ProduitPanier;
+import model.*;
 import services.ClientService;
+import services.CommandeService;
 import services.PanierService;
 import services.ProduitService;
 import services.db.DBService;
@@ -32,13 +30,16 @@ public class Lanceur {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
             System.out.println("Menu:");
-            System.out.println("[0] : exit");
-            System.out.println("[1] : créer un Produit");
-            System.out.println("[2] : lister les Produits");
-            System.out.println("[3] : créer un Client");
-            System.out.println("[4] : lister les Clients");
+            System.out.println("[0] : Exit");
+            System.out.println("[1] : Créer un Produit");
+            System.out.println("[2] : Lister les Produits");
+            System.out.println("[3] : Créer un Client");
+            System.out.println("[4] : Lister les Clients");
             System.out.println("[5] : Détail d'un client");
             System.out.println("[6] : Ajouter un produit au panier");
+            System.out.println("[7] : Passer une commande");
+            System.out.println("[8] : Lister les commandes");
+            System.out.println("[9] : Détail d'une commande");
             System.out.print("Votre choix : ");
 
             String command = br.readLine();
@@ -114,6 +115,35 @@ public class Lanceur {
                     Panier panier = PanierService.get().getPanier(client);
                     Produit produit = ProduitService.get().getProduit(idProduit);
                     PanierService.get().ajouterProduit(panier, produit);
+                } catch (InvalidArgumentException e) {
+                    e.printStackTrace();
+                }
+            } else if (command.equals("7")) {
+                System.out.print("Veuillez saisir l'id du client : ");
+                String idClient = br.readLine();
+                try {
+                    Client client = ClientService.get().getClient(idClient);
+                    Panier panier = PanierService.get().getPanier(client);
+                    Commande commande = CommandeService.get().creerDepuisPanier(panier);
+                    CommandeService.get().enregistrer(commande, panier);
+                    System.out.println(String.format("Le client [%s %s] vient de créer une commande d'un montant de %f", commande.client.prenom, commande.client.nom, commande.montant));
+                } catch (InvalidArgumentException e) {
+                    e.printStackTrace();
+                }
+            } else if (command.equals("8")) {
+                List<Commande> commandes = CommandeService.get().lister();
+                for (Commande commande : commandes) {
+                    System.out.println(String.format("%s / %s / %s / %s / %f", commande.id, commande.date, commande.client.nom, commande.client.prenom, commande.montant));
+                }
+            } else if (command.equals("9")) {
+                System.out.print("Veuillez saisir l'id de la commande : ");
+                String idCommande = br.readLine();
+                try {
+                    Commande commande = CommandeService.get().getCommande(idCommande);
+                    System.out.println(String.format("%s / %s / %s / %s / %f", commande.id, commande.date, commande.client.nom, commande.client.prenom, commande.montant));
+                    for (ProduitCommande produit : commande.produits) {
+                        System.out.println(String.format("%s / %.2f / %d", produit.produit.nom, produit.produit.prixUnitaire, produit.quantite));
+                    }
                 } catch (InvalidArgumentException e) {
                     e.printStackTrace();
                 }
