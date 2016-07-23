@@ -37,8 +37,8 @@ public class Lanceur {
             System.out.println("[2] : lister les Produits");
             System.out.println("[3] : créer un Client");
             System.out.println("[4] : lister les Clients");
-            System.out.println("[5] : Ajouter un produit au panier");
-            System.out.println("[6] : Détail d'un client");
+            System.out.println("[5] : Détail d'un client");
+            System.out.println("[6] : Ajouter un produit au panier");
             System.out.print("Votre choix : ");
 
             String command = br.readLine();
@@ -94,19 +94,6 @@ public class Lanceur {
             } else if (command.equals("5")) {
                 System.out.print("Veuillez saisir l'id du client : ");
                 String idClient = br.readLine();
-                System.out.print("Veuillez saisir l'id du produit : ");
-                String idProduit = br.readLine();
-                try {
-                    Client client = ClientService.get().getClient(idClient);
-                    Panier panier = PanierService.get().getPanier(client);
-                    Produit produit = ProduitService.get().getProduit(idProduit);
-                    PanierService.get().ajouterProduit(panier, produit);
-                } catch (InvalidArgumentException e) {
-                    e.printStackTrace();
-                }
-            } else if (command.equals("6")) {
-                System.out.print("Veuillez saisir l'id du client : ");
-                String idClient = br.readLine();
                 try {
                     Client client = ClientService.get().getClient(idClient);
                     Panier panier = PanierService.get().getPanier(client);
@@ -114,6 +101,19 @@ public class Lanceur {
                     for (ProduitPanier produit : panier.produits) {
                         System.out.println(String.format("%s / %.2f / %d", produit.produit.nom, produit.produit.prixUnitaire, produit.quantite));
                     }
+                } catch (InvalidArgumentException e) {
+                    e.printStackTrace();
+                }
+            } else if (command.equals("6")) {
+                System.out.print("Veuillez saisir l'id du client : ");
+                String idClient = br.readLine();
+                System.out.print("Veuillez saisir l'id du produit : ");
+                String idProduit = br.readLine();
+                try {
+                    Client client = ClientService.get().getClient(idClient);
+                    Panier panier = PanierService.get().getPanier(client);
+                    Produit produit = ProduitService.get().getProduit(idProduit);
+                    PanierService.get().ajouterProduit(panier, produit);
                 } catch (InvalidArgumentException e) {
                     e.printStackTrace();
                 }
