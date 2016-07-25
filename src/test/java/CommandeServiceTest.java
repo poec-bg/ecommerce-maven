@@ -3,6 +3,7 @@ import model.Client;
 import model.Commande;
 import model.Panier;
 import model.Produit;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import services.ClientService;
@@ -12,13 +13,16 @@ import services.ProduitService;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class CommandeServiceTest {
 
     Client client;
+
+    @AfterClass
+    public static void apresClasse() {
+        CommandeService.get().clear();
+    }
 
     @Before
     public void avantToutTest() {
@@ -176,7 +180,8 @@ public class CommandeServiceTest {
     }
     // ----------------------
 
-    // lister@Test
+    // lister
+    @Test
     public void testLister_noCommande() {
         // Given
 

@@ -81,7 +81,7 @@ public class CommandeService {
             PreparedStatement preparedStatement = DBService.get().getConnection().prepareStatement("INSERT INTO Commande (`id`, `idClient`, `date`, `montant`) VALUES (?, ? , ? , ?)");
             preparedStatement.setString(1, commande.id);
             preparedStatement.setString(2, commande.client.id);
-            preparedStatement.setTimestamp(3, new java.sql.Timestamp(commande.date.toDate().getTime()));
+            preparedStatement.setTimestamp(3, new Timestamp(commande.date.toDate().getTime()));
             preparedStatement.setFloat(4, commande.montant);
             preparedStatement.execute();
 
