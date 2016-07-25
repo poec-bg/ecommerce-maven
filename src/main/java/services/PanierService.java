@@ -202,7 +202,7 @@ public class PanierService {
             PreparedStatement preparedStatement = DBService.get().getConnection().prepareStatement("INSERT INTO Panier (`id`, `idClient`, `date`) VALUES (?, ? , ?)");
             preparedStatement.setString(1, panier.id);
             preparedStatement.setString(2, panier.client.id);
-            preparedStatement.setTimestamp(3, new java.sql.Timestamp(panier.date.toDate().getTime()));
+            preparedStatement.setTimestamp(3, new Timestamp(panier.date.toDate().getTime()));
 
             preparedStatement.execute();
         } catch (SQLException e) {

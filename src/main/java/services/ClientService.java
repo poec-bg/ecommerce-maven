@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import exceptions.InvalidArgumentException;
 import exceptions.MetierException;
 import model.Client;
+import org.mindrot.jbcrypt.BCrypt;
 import services.db.DBService;
 import validators.EmailValidator;
 
@@ -16,6 +17,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class ClientService {
+
+    private static int BCRYPT_WORKLOAD = 12;
 
     /**
      * Singleton
@@ -70,7 +73,7 @@ public class ClientService {
         Client client = new Client();
         client.id = UUID.randomUUID().toString();
         client.email = email;
-        client.motDePasse = motDePasse;
+        client.motDePasse = encodePassword(motDePasse);
         return client;
     }
 
@@ -134,6 +137,11 @@ public class ClientService {
         return client1;
     }
 
+    private String encodePassword(String password) {
+        String salt = BCrypt.gensalt(BCRYPT_WORKLOAD);
+        return BCrypt.hashpw(password, salt);
+    }
+
     public boolean authenticate(String email, String motDePasse) throws InvalidArgumentException {
 
         List<String> validationMessages = new ArrayList<>();
@@ -149,9 +157,11 @@ public class ClientService {
 
         try {
             Statement requete = DBService.get().getConnection().createStatement();
-            ResultSet result = requete.executeQuery("SELECT * FROM Client WHERE email='" + email + "' AND motDePasse='" + motDePasse + "'");
+            ResultSet result = requete.executeQuery("SELECT motDePasse FROM Client WHERE email='" + email + "'");
             if (result.next()) {
-                return true;
+                if(BCrypt.checkpw(motDePasse, result.getString("motDePasse"))) {
+                    return true;
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -184,13 +194,15 @@ public class ClientService {
 
     public void enregistrer(Client client) {
         try {
-            PreparedStatement preparedStatement = DBService.get().getConnection().prepareStatement("INSERT INTO Client (`id`, `nom`, `email`, `motDePasse`, `prenom`, `isSupprime`) VALUES (?, ? , ? , ? , ?, ?)");
+            PreparedStatement preparedStatement = DBService.get().getConnection().prepareStatement("INSERT INTO Client (`id`, `nom`, `email`, `motDePasse`, `prenom`, `adressePostale`, `telephone`, `isSupprime`) VALUES (?, ? , ? , ? , ?, ?, ?, ?)");
             preparedStatement.setString(1, client.id);
             preparedStatement.setString(2, client.nom);
             preparedStatement.setString(3, client.email);
             preparedStatement.setString(4, client.motDePasse);
             preparedStatement.setString(5, client.prenom);
-            preparedStatement.setBoolean(6, client.isSupprime);
+            preparedStatement.setString(6, client.adressePostale);
+            preparedStatement.setString(7, client.telephone);
+            preparedStatement.setBoolean(8, client.isSupprime);
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -210,6 +222,38 @@ public class ClientService {
         try {
             Statement requete = DBService.get().getConnection().createStatement();
             ResultSet result = requete.executeQuery("SELECT * FROM Client WHERE id='" + idClient + "'");
+            if (result.next()) {
+                Client client = new Client();
+                client.id = result.getString("id");
+                client.email = result.getString("email");
+                client.nom = result.getString("nom");
+                client.prenom = result.getString("prenom");
+                client.adressePostale = result.getString("adressePostale");
+                client.telephone = result.getString("telephone");
+                client.isSupprime = result.getBoolean("isSupprime");
+                return client;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+    public Client getClientByEmail(String email) throws InvalidArgumentException {
+
+        List<String> validationMessages = new ArrayList<>();
+        if (Strings.isNullOrEmpty(email)) {
+            validationMessages.add("L'email ne peut être null ou vide");
+        }
+        if (validationMessages.size() > 0) {
+            throw new InvalidArgumentException((String[]) validationMessages.toArray(new String[0]));
+        }
+
+        try {
+            Statement requete = DBService.get().getConnection().createStatement();
+            ResultSet result = requete.executeQuery("SELECT * FROM Client WHERE email='" + email + "'");
             if (result.next()) {
                 Client client = new Client();
                 client.id = result.getString("id");

@@ -3,7 +3,6 @@ import model.Produit;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import services.ClientService;
 import services.ProduitService;
 
 import java.util.List;
@@ -118,6 +117,7 @@ public class ProduitServiceTest {
             assertTrue(true);
         }
     }
+
     @Test
     public void testModifier_nomNull() {
         // Given
