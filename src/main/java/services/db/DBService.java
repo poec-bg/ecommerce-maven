@@ -16,10 +16,9 @@ public class DBService {
             Class.forName("com.mysql.jdbc.Driver");
             String ip = System.getenv().get("DB_PORT_3306_TCP_ADDR");
             if (Strings.isNullOrEmpty(ip)) {
-                ip = "10.110.10.13";
-//                ip = "10.0.0.21";
+                ip = "10.110.10.29";
             }
-            connection = DriverManager.getConnection("jdbc:mysql://" + ip + "/nicogiard?user=root&password=formation&useSSL=false");
+            connection = DriverManager.getConnection("jdbc:mysql://" + ip + "/aime?user=root&password=formation&useSSL=false");
         } catch (ClassNotFoundException | SQLException e) {
             System.exit(0);
         }
