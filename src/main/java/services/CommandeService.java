@@ -51,9 +51,32 @@ public class CommandeService {
         commande.produits = panier.produits;
 
         for ( ProduitPanier produitPanier : panier.produits) {
-            commande.montantHT = commande.montantHT + produitPanier.produit.prixUnitaire;
+            commande.montantHT = commande.montantHT + (produitPanier.produit.prixUnitaire * produitPanier.quantite);
         }
 
+        try {
+            PreparedStatement preparedStatement = DBService.get().getConnection().prepareStatement("INSERT INTO Commande (`id`, `date`, `idClient`, `montant`) VALUES (?, ?, ?, ?)");
+            preparedStatement.setString(1, commande.id);
+            preparedStatement.setString(2, String.valueOf(commande.date));
+            preparedStatement.setString(3, commande.client.id);
+            preparedStatement.setString(4, String.valueOf(commande.montantHT));
+
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            PreparedStatement preparedStatement = DBService.get().getConnection().prepareStatement("INSERT INTO ProduitCommande (`idCommande`, `idProduit`, `quantite`, `prixUnitaire`) VALUES (?, ?, ?, ?)");
+            preparedStatement.setString(1, commande.id);
+            preparedStatement.setString(2, commande.);
+            preparedStatement.setString(3, commande.client.id);
+            preparedStatement.setString(4, String.valueOf(commande.montantHT));
+
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
 //        commande.produits = new model.ProduitCommande[panier.produits.length];
 //        for (int indexProduitPanier = 0; indexProduitPanier < panier.produits.length; indexProduitPanier++) {
@@ -61,12 +84,12 @@ public class CommandeService {
 //                    panier.produits[indexProduitPanier].quantite,
 //                    panier.produits[indexProduitPanier].produit.prixUnitaire);
 //        }
-        commande.produits = new ArrayList<>();
-        for (ProduitPanier produitPanier : panier.produits) {
-            commande.produits.add(new ProduitCommande(produitPanier.produit,
-                    produitPanier.quantite,
-                    produitPanier.produit.prixUnitaire));
-        }
+//        commande.produits = new ArrayList<>();
+//        for (ProduitPanier produitPanier : panier.produits) {
+//            commande.produits.add(new ProduitCommande(produitPanier.produit,
+//                    produitPanier.quantite,
+//                    produitPanier.produit.prixUnitaire));
+//        }
 
         return commande;
     }

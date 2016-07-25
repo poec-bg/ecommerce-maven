@@ -13,5 +13,5 @@ public class Commande {
     public DateTime date;
     public Client client;
     public float montantHT;
-    public List<ProduitPanier> produits = new ArrayList<>();
+    public List<ProduitPanier> produits; // = new ArrayList<>();
 }

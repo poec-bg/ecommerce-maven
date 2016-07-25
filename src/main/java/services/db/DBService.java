@@ -12,7 +12,7 @@ public class DBService {
     private DBService() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://10.110.10.30:32768/sebastien?user=root&password=formation&useSSL=false");
+            connection = DriverManager.getConnection("jdbc:mysql://10.110.10.30:3306/sebastien?user=root&password=formation&useSSL=false");
         } catch (ClassNotFoundException | SQLException e) {
             System.exit(0);
         }
