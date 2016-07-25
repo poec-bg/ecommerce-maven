@@ -3,6 +3,7 @@ import model.Client;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import services.ClientService;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class ClientServiceTest {
         ClientService.get().clear();
         try {
             client = ClientService.get().creer("luke.skywalker@gmail.com", "iamyourfather");
-            ClientService.get().modifier(client, "Skywalker","Luke", "2 rue de Mos Eisley, Tatooine", "0123456789");
+            ClientService.get().modifier(client, "Skywalker", "Luke", "2 rue de Mos Eisley, Tatooine", "0123456789");
         } catch (Exception e) {
             fail();
         }
@@ -322,10 +323,11 @@ public class ClientServiceTest {
     public void testAuthenticate_goodLogin() {
         // Given
         ClientService.get().enregistrer(client);
+        String motDePasse = "iamyourfather";
 
         // When
         try {
-            boolean isAuthenticate = ClientService.get().authenticate(client.email, client.motDePasse);
+            boolean isAuthenticate = ClientService.get().authenticate(client.email, motDePasse);
             assertTrue(isAuthenticate);
         } catch (InvalidArgumentException e) {
             // Then
@@ -376,6 +378,56 @@ public class ClientServiceTest {
         // When
         try {
             Client client1 = ClientService.get().getClient(idClient);
+            // Then
+            assertEquals(client.nom, client1.nom);
+        } catch (InvalidArgumentException e) {
+            fail();
+        }
+    }
+    // ----------------------
+
+    // ----------------------
+    // getClientByEmail
+    @Test
+    public void testGetClientByEmail_everythingWrong() {
+        // Given
+        String email = null;
+
+        // When
+        try {
+            Client client = ClientService.get().getClientByEmail(email);
+            fail();
+        } catch (InvalidArgumentException e) {
+            // Then
+            assertTrue(e.getRealMessage().contains("L'email ne peut être null ou vide"));
+        }
+    }
+
+    @Test
+    public void testGetClientByEmail_unknownEmail() {
+        // Given
+        ClientService.get().enregistrer(client);
+        String email = "unknown";
+
+        // When
+        try {
+            Client client = ClientService.get().getClientByEmail(email);
+            // Then
+            assertEquals(null, client);
+        } catch (InvalidArgumentException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testGetClient_goodEmail() {
+        // Given
+        ClientService.get().enregistrer(client);
+        String email = client.email;
+
+        // When
+        try {
+            Client client1 = ClientService.get().getClientByEmail(email);
             // Then
             assertEquals(client.nom, client1.nom);
         } catch (InvalidArgumentException e) {

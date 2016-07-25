@@ -2,7 +2,7 @@ CREATE TABLE `Client` (
   `id` VARCHAR(255) NOT NULL,
   `nom` VARCHAR(45) NULL,
   `email` VARCHAR(45) NOT NULL,
-  `motDePasse` VARCHAR(45) NOT NULL,
+  `motDePasse` VARCHAR(100) NOT NULL,
   `prenom` VARCHAR(45) NULL,
   `adressePostale` VARCHAR(45) NULL,
   `telephone` VARCHAR(45) NULL,
