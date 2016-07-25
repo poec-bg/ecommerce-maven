@@ -1,8 +1,12 @@
 import exceptions.InvalidArgumentException;
 import model.Produit;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import services.ClientService;
+import services.CommandeService;
+import services.PanierService;
 import services.ProduitService;
 
 import java.util.List;
@@ -13,7 +17,15 @@ public class ProduitServiceTest {
 
     @BeforeClass
     public static void avantClass() {
-        System.out.println("Avant la classe Produit\n");
+        System.out.println("Avant la classe ProduitServiceTest\n");
+    }
+
+    @AfterClass
+    public static void apresClasse() {
+        CommandeService.get().clear();
+        PanierService.get().clear();
+        ClientService.get().clear();
+        ProduitService.get().clear();
     }
 
     @Before

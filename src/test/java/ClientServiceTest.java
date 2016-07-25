@@ -1,10 +1,14 @@
 import exceptions.InvalidArgumentException;
 import model.Client;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import services.ClientService;
+import services.CommandeService;
+import services.PanierService;
+import services.ProduitService;
 
 import java.util.List;
 
@@ -16,7 +20,15 @@ public class ClientServiceTest {
 
     @BeforeClass
     public static void avantClass() {
-        System.out.println("Avant la classe Client\n");
+        System.out.println("Avant la classe ClientServiceTest\n");
+    }
+
+    @AfterClass
+    public static void apresClasse() {
+        CommandeService.get().clear();
+        PanierService.get().clear();
+        ClientService.get().clear();
+        ProduitService.get().clear();
     }
 
     @Before
