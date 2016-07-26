@@ -5,6 +5,7 @@ import model.Panier;
 import model.Produit;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import services.ClientService;
 import services.CommandeService;
@@ -19,9 +20,17 @@ public class CommandeServiceTest {
 
     Client client;
 
+    @BeforeClass
+    public static void avantClass() {
+        System.out.println("Avant la classe CommandeServiceTest\n");
+    }
+
     @AfterClass
     public static void apresClasse() {
         CommandeService.get().clear();
+        PanierService.get().clear();
+        ClientService.get().clear();
+        ProduitService.get().clear();
     }
 
     @Before
