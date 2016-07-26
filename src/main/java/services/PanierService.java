@@ -141,6 +141,44 @@ public class PanierService {
         return getPanier(panier.client);
     }
 
+    public Panier ajouterProduit(Panier panier, Produit produit, int quantite) throws InvalidArgumentException {
+        List<String> validationMessages = new ArrayList<>();
+        if (panier == null) {
+            validationMessages.add("Le panier ne peut être null");
+        }
+        if (produit == null) {
+            validationMessages.add("Le produit ne peut être null");
+        }
+        if (quantite <= 0) {
+            validationMessages.add("La quantite ne peut négative ou null.");
+        }
+        if (validationMessages.size() > 0) {
+            throw new InvalidArgumentException((String[]) validationMessages.toArray(new String[0]));
+        }
+
+        boolean founded = false;
+        for (ProduitPanier produitPanier : panier.produits) {
+            if (produitPanier.produit.id.equals(produit.id)) {
+                modifierQuantite(panier, produit, produitPanier.quantite + quantite);
+                founded = true;
+            }
+        }
+
+        if (!founded) {
+            panier.produits.add(new ProduitPanier(produit, 1));
+            try {
+                PreparedStatement preparedStatement = DBService.get().getConnection().prepareStatement("INSERT INTO ProduitPanier (`idPanier`, `idProduit`, `quantite`) VALUES (?, ? , ?)");
+                preparedStatement.setString(1, panier.id);
+                preparedStatement.setString(2, produit.id);
+                preparedStatement.setInt(3, quantite);
+                preparedStatement.execute();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return getPanier(panier.client);
+    }
+
     public Panier retirerProduit(Panier panier, Produit produit) throws InvalidArgumentException {
         List<String> validationMessages = new ArrayList<>();
         if (panier == null) {
