@@ -96,11 +96,12 @@ public class ProduitService {
         List<Produit> produitsDb = new ArrayList<>();
         try {
             Statement requete = DBService.get().getConnection().createStatement();
-            ResultSet result = requete.executeQuery("SELECT * FROM Produit");
+            ResultSet result = requete.executeQuery("SELECT * FROM Produit ORDER BY nom");
             while (result.next()) {
                 Produit produit = new Produit();
                 produit.id = result.getString("id");
                 produit.nom = result.getString("nom");
+                produit.description = result.getString("description");
                 produit.prixUnitaire = result.getFloat("prixUnitaire");
                 produit.isSupprime = result.getBoolean("isSupprime");
                 produitsDb.add(produit);
@@ -142,6 +143,7 @@ public class ProduitService {
                 Produit produit = new Produit();
                 produit.id = result.getString("id");
                 produit.nom = result.getString("nom");
+                produit.description = result.getString("description");
                 produit.prixUnitaire = result.getFloat("prixUnitaire");
                 produit.isSupprime = result.getBoolean("isSupprime");
                 return produit;

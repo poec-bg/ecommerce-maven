@@ -235,7 +235,7 @@ public class ProduitServiceTest {
         Produit produit1 = ProduitService.get().creer("Classeur", "", 5);
         ProduitService.get().enregistrer(produit1);
         // enregistrer un deuxième Produit
-        Produit produit2 = ProduitService.get().creer("Intercalaire", "", 2.5f);
+        Produit produit2 = ProduitService.get().creer("Intercalaire", "Super produit", 2.5f);
         ProduitService.get().enregistrer(produit2);
 
         // When
@@ -243,6 +243,8 @@ public class ProduitServiceTest {
 
         // Then
         assertEquals(2, produits.size());
+        assertEquals(produit1.description, produits.get(0).description);
+        assertEquals(produit2.description, produits.get(1).description);
     }
     // ----------------------
 
@@ -302,6 +304,7 @@ public class ProduitServiceTest {
             Produit produit = ProduitService.get().getProduit(idProduit);
             // Then
             assertEquals(produit1.nom, produit.nom);
+            assertEquals(produit1.description, produit.description);
         } catch (InvalidArgumentException e) {
             fail();
         }
