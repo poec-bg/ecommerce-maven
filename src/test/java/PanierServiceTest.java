@@ -4,9 +4,12 @@ import model.Panier;
 import model.Produit;
 import model.ProduitPanier;
 import org.joda.time.DateTime;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import services.ClientService;
+import services.CommandeService;
 import services.PanierService;
 import services.ProduitService;
 import services.date.DateService;
@@ -18,6 +21,18 @@ import static org.junit.Assert.*;
 public class PanierServiceTest {
 
     Client client;
+    @BeforeClass
+    public static void avantClass() {
+        System.out.println("Avant la classe PanierServiceTest\n");
+    }
+
+    @AfterClass
+    public static void apresClasse() {
+        CommandeService.get().clear();
+        PanierService.get().clear();
+        ClientService.get().clear();
+        ProduitService.get().clear();
+    }
 
     @Before
     public void avantToutTest() {
