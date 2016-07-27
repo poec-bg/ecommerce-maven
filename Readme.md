@@ -5,7 +5,7 @@ mvn test
 ```
 
 ```
-docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=formation --name mysql_solo mysql
+docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=formation --restart=always --name mysql_solo mysql
 
 mkdir ~/.m2
 
