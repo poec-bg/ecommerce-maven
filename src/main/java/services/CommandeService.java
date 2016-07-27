@@ -127,6 +127,35 @@ public class CommandeService {
         return commandes;
     }
 
+    public List<Commande> lister(String idClient) {
+        List<Commande> commandes = new ArrayList<>();
+        try {
+            PreparedStatement requeteCommande = DBService.get().getConnection().prepareStatement("SELECT * FROM Commande WHERE idClient = ?;");
+            requeteCommande.setString(1, idClient);
+            ResultSet resultCommande = requeteCommande.executeQuery();
+            while (resultCommande.next()) {
+                Commande commande = new Commande();
+                commande.id = resultCommande.getString("id");
+                commande.date = new DateTime(resultCommande.getTimestamp("date"));
+                commande.client = ClientService.get().getClient(resultCommande.getString("idClient"));
+                commande.montant = resultCommande.getFloat("montant");
+
+                Statement requeteProduitCommande = DBService.get().getConnection().createStatement();
+                ResultSet resultProduitPanier = requeteProduitCommande.executeQuery("SELECT * FROM ProduitCommande WHERE idCommande='" + commande.id + "'");
+                while (resultProduitPanier.next()) {
+                    String idProduit = resultProduitPanier.getString("idProduit");
+                    Produit produit = ProduitService.get().getProduit(idProduit);
+                    ProduitCommande produitCommande = new ProduitCommande(produit, resultProduitPanier.getInt("quantite"), resultProduitPanier.getFloat("prixUnitaire"));
+                    commande.produits.add(produitCommande);
+                }
+                commandes.add(commande);
+            }
+        } catch (SQLException | InvalidArgumentException e) {
+            e.printStackTrace();
+        }
+        return commandes;
+    }
+
     public Commande getCommande(String idCommande) throws InvalidArgumentException {
 
         List<String> validationMessages = new ArrayList<>();
