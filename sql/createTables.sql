@@ -6,6 +6,7 @@ CREATE TABLE `Client` (
   `prenom` VARCHAR(45) NULL,
   `adressePostale` VARCHAR(45) NULL,
   `telephone` VARCHAR(45) NULL,
+  `role` VARCHAR(45) NULL,
   `isSupprime` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`, `email`, `motDePasse`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),

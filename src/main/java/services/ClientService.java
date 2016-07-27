@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import exceptions.InvalidArgumentException;
 import exceptions.MetierException;
 import model.Client;
+import model.types.EUserRole;
 import org.mindrot.jbcrypt.BCrypt;
 import services.db.DBService;
 import validators.EmailValidator;
@@ -74,6 +75,7 @@ public class ClientService {
         client.id = UUID.randomUUID().toString();
         client.email = email;
         client.motDePasse = encodePassword(motDePasse);
+        client.role = EUserRole.CLIENT;
         return client;
     }
 
@@ -183,6 +185,7 @@ public class ClientService {
                 client.prenom = result.getString("prenom");
                 client.adressePostale = result.getString("adressePostale");
                 client.telephone = result.getString("telephone");
+                client.role = EUserRole.valueOf(result.getString("role"));
                 client.isSupprime = result.getBoolean("isSupprime");
                 clients.add(client);
             }
@@ -194,7 +197,7 @@ public class ClientService {
 
     public void enregistrer(Client client) {
         try {
-            PreparedStatement preparedStatement = DBService.get().getConnection().prepareStatement("INSERT INTO Client (`id`, `nom`, `email`, `motDePasse`, `prenom`, `adressePostale`, `telephone`, `isSupprime`) VALUES (?, ? , ? , ? , ?, ?, ?, ?)");
+            PreparedStatement preparedStatement = DBService.get().getConnection().prepareStatement("INSERT INTO Client (`id`, `nom`, `email`, `motDePasse`, `prenom`, `adressePostale`, `telephone`, `role`, `isSupprime`) VALUES (?, ? , ? , ? , ?, ?, ?, ?, ?)");
             preparedStatement.setString(1, client.id);
             preparedStatement.setString(2, client.nom);
             preparedStatement.setString(3, client.email);
@@ -202,7 +205,8 @@ public class ClientService {
             preparedStatement.setString(5, client.prenom);
             preparedStatement.setString(6, client.adressePostale);
             preparedStatement.setString(7, client.telephone);
-            preparedStatement.setBoolean(8, client.isSupprime);
+            preparedStatement.setString(8, client.role.name());
+            preparedStatement.setBoolean(9, client.isSupprime);
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -230,6 +234,7 @@ public class ClientService {
                 client.prenom = result.getString("prenom");
                 client.adressePostale = result.getString("adressePostale");
                 client.telephone = result.getString("telephone");
+                client.role = EUserRole.valueOf(result.getString("role"));
                 client.isSupprime = result.getBoolean("isSupprime");
                 return client;
             }
@@ -262,6 +267,7 @@ public class ClientService {
                 client.prenom = result.getString("prenom");
                 client.adressePostale = result.getString("adressePostale");
                 client.telephone = result.getString("telephone");
+                client.role = EUserRole.valueOf(result.getString("role"));
                 client.isSupprime = result.getBoolean("isSupprime");
                 return client;
             }
